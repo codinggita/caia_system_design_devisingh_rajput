@@ -5,6 +5,7 @@ const morgan = require('morgan');
 
 const env = require('./config/env');
 const { notFound, errorHandler } = require('./middlewares/error');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -28,6 +29,8 @@ app.get('/', (req, res) => {
     message: 'CAIA backend is running'
   });
 });
+
+app.use('/api/v1/auth', authRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
