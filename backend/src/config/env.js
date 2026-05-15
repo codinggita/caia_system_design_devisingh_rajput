@@ -16,6 +16,21 @@ REQUIRED_VARS.forEach((varName) => {
   }
 });
 
+const parseRateLimitWindow = () => {
+  const rawValue = parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10);
+
+  if (Number.isNaN(rawValue)) {
+    return 15 * 60 * 1000;
+  }
+
+  // Backward compatible: treat small values as minutes.
+  if (rawValue < 1000) {
+    return rawValue * 60 * 1000;
+  }
+
+  return rawValue;
+};
+
 module.exports = {
   // Server Configuration
   PORT: parseInt(process.env.PORT, 10) || 3000,
@@ -36,7 +51,7 @@ module.exports = {
   CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:3000,http://localhost:3001',
 
   // Rate Limiting
-  RATE_LIMIT_WINDOW_MS: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10) || 15 * 60 * 1000,
+  RATE_LIMIT_WINDOW_MS: parseRateLimitWindow(),
   RATE_LIMIT_MAX_REQUESTS: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS, 10) || 1000,
 
   // Logging & Monitoring
