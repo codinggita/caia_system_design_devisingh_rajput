@@ -10,6 +10,8 @@ const authRoutes = require('./routes/authRoutes');
 const healthRoutes = require('./routes/healthRoutes');
 const conceptRoutes = require('./routes/conceptRoutes');
 const bookmarkNoteRoutes = require('./routes/bookmarkNoteRoutes');
+const searchRoutes = require('./routes/searchRoutes');
+const filterRoutes = require('./routes/filterRoutes');
 
 const app = express();
 
@@ -36,6 +38,8 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/health', healthRoutes);
 app.use('/api/v1/concepts', conceptRoutes);
 app.use('/api/v1/me', bookmarkNoteRoutes);
+app.use('/api/v1/search', searchRoutes);
+app.use('/api/v1/filter', filterRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
