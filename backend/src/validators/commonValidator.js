@@ -136,3 +136,29 @@ exports.dateFilterSchema = Joi.object({
       'any.required': 'Date parameter (after) is required'
     })
 });
+
+/**
+ * Validation schema for analytics query options
+ */
+exports.analyticsQuerySchema = Joi.object({
+  days: Joi.number()
+    .integer()
+    .min(1)
+    .max(90)
+    .default(30)
+    .messages({
+      'number.base': 'Days must be a number',
+      'number.min': 'Days must be at least 1',
+      'number.max': 'Days cannot exceed 90'
+    }),
+  limit: Joi.number()
+    .integer()
+    .min(1)
+    .max(20)
+    .default(10)
+    .messages({
+      'number.base': 'Limit must be a number',
+      'number.min': 'Limit must be at least 1',
+      'number.max': 'Limit cannot exceed 20'
+    })
+});

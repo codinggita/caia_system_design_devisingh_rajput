@@ -15,6 +15,7 @@ const filterRoutes = require('./routes/filterRoutes');
 const voteRoutes = require('./routes/voteRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use('/api/v1/filter', filterRoutes);
 app.use('/api/v1/votes', voteRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/analytics', analyticsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
