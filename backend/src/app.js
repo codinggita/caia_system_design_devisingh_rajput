@@ -12,6 +12,7 @@ const conceptRoutes = require('./routes/conceptRoutes');
 const bookmarkNoteRoutes = require('./routes/bookmarkNoteRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const filterRoutes = require('./routes/filterRoutes');
+const voteRoutes = require('./routes/voteRoutes');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/api/v1/concepts', conceptRoutes);
 app.use('/api/v1/me', bookmarkNoteRoutes);
 app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/filter', filterRoutes);
+app.use('/api/v1/votes', voteRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
