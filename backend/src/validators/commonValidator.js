@@ -162,3 +162,30 @@ exports.analyticsQuerySchema = Joi.object({
       'number.max': 'Limit cannot exceed 20'
     })
 });
+
+/**
+ * Validation schema for audit log query options
+ */
+exports.auditLogQuerySchema = Joi.object({
+  page: Joi.number()
+    .integer()
+    .min(1)
+    .default(1),
+  limit: Joi.number()
+    .integer()
+    .min(1)
+    .max(100)
+    .default(20),
+  action: Joi.string()
+    .trim()
+    .optional(),
+  status: Joi.string()
+    .valid('success', 'failure')
+    .optional(),
+  actorId: Joi.string()
+    .pattern(/^[0-9a-fA-F]{24}$/)
+    .optional()
+    .messages({
+      'string.pattern.base': 'actorId must be a valid MongoDB ObjectId'
+    })
+});

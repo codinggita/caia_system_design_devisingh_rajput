@@ -1,8 +1,10 @@
 const Concept = require('../models/Concept');
 const asyncHandler = require('../utils/asyncHandler');
 const { successResponse } = require('../utils/response');
+const { logSearchEvent } = require('../utils/searchLogger');
 
 const searchConcepts = asyncHandler(async (req, res) => {
+  const startedAt = Date.now();
   const { q, page = 1, limit = 20 } = req.query;
 
   const filter = {
@@ -21,6 +23,17 @@ const searchConcepts = asyncHandler(async (req, res) => {
     Concept.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     Concept.countDocuments(filter)
   ]);
+
+  await logSearchEvent({
+    req,
+    query: q,
+    resultCount: total,
+    page,
+    limit,
+    filters: {},
+    startedAt,
+    userId: req.user ? req.user.id : null
+  });
 
   return successResponse(res, 200, 'Search results fetched successfully', {
     items,
