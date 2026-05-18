@@ -141,7 +141,14 @@ exports.bulkCreateConceptsSchema = Joi.object({
  */
 exports.archiveConceptsSchema = Joi.object({
   conceptIds: Joi.array()
-    .items(Joi.string().required())
+    .items(
+      Joi.string()
+        .pattern(/^[0-9a-fA-F]{24}$/)
+        .required()
+        .messages({
+          'string.pattern.base': 'Each concept ID must be a valid MongoDB ObjectId'
+        })
+    )
     .min(1)
     .required()
     .messages({
