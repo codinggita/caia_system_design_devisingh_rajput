@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const env = require('./config/env');
 const logger = require('./middlewares/logger');
 const rateLimit = require('./middlewares/rateLimit');
+const requestContext = require('./middlewares/requestContext');
 const { notFound, errorHandler } = require('./middlewares/error');
 const authRoutes = require('./routes/authRoutes');
 const healthRoutes = require('./routes/healthRoutes');
@@ -31,6 +32,7 @@ app.use(
   })
 );
 app.use(express.json({ limit: '1mb' }));
+app.use(requestContext);
 app.use(rateLimit);
 app.use(logger);
 

@@ -13,6 +13,7 @@ const errorHandler = (err, req, res, next) => {
   // Log to console for dev
   if (process.env.NODE_ENV === 'development') {
     console.error('❌ Error:', {
+      requestId: req.requestId || 'unknown',
       message: err.message,
       stack: err.stack,
       url: req.originalUrl,
