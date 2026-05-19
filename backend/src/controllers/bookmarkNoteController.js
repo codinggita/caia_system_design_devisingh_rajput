@@ -1,7 +1,9 @@
 const Bookmark = require('../models/Bookmark');
 const Concept = require('../models/Concept');
 const Note = require('../models/Note');
+const Vote = require('../models/Vote');
 const asyncHandler = require('../utils/asyncHandler');
+const { buildPaginationMeta, resolvePagination } = require('../utils/paginator');
 const { successResponse } = require('../utils/response');
 const { ConflictError, NotFoundError } = require('../utils/errorClass');
 
@@ -19,6 +21,47 @@ const getMyBookmarks = asyncHandler(async (req, res) => {
     .populate('concept');
 
   return successResponse(res, 200, 'Bookmarks fetched successfully', bookmarks);
+});
+
+const getMyNotes = asyncHandler(async (req, res) => {
+  const { page, limit, skip } = resolvePagination({
+    page: req.query.page,
+    limit: req.query.limit,
+    defaultLimit: 20
+  });
+  const sortBy = req.query.sort === 'oldest' ? { createdAt: 1 } : { createdAt: -1 };
+
+  const [items, total] = await Promise.all([
+    Note.find({ user: req.user.id })
+      .sort(sortBy)
+      .skip(skip)
+      .limit(limit)
+      .populate('concept'),
+    Note.countDocuments({ user: req.user.id })
+  ]);
+
+  return successResponse(res, 200, 'Notes fetched successfully', {
+    items,
+    pagination: buildPaginationMeta({ page, limit, total })
+  });
+});
+
+const getMyActivitySummary = asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  const [bookmarks, notes, votes, createdConcepts] = await Promise.all([
+    Bookmark.countDocuments({ user: userId }),
+    Note.countDocuments({ user: userId }),
+    Vote.countDocuments({ user: userId }),
+    Concept.countDocuments({ createdBy: userId, isArchived: false })
+  ]);
+
+  return successResponse(res, 200, 'Activity summary fetched successfully', {
+    bookmarks,
+    notes,
+    votes,
+    createdConcepts
+  });
 });
 
 const addBookmark = asyncHandler(async (req, res) => {
@@ -90,6 +133,8 @@ const deleteNote = asyncHandler(async (req, res) => {
 
 module.exports = {
   getMyBookmarks,
+  getMyNotes,
+  getMyActivitySummary,
   addBookmark,
   removeBookmark,
   upsertNote,

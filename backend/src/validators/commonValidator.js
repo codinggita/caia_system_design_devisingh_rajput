@@ -189,3 +189,21 @@ exports.auditLogQuerySchema = Joi.object({
       'string.pattern.base': 'actorId must be a valid MongoDB ObjectId'
     })
 });
+
+/**
+ * Validation schema for personal notes list query options
+ */
+exports.notesListQuerySchema = Joi.object({
+  page: Joi.number()
+    .integer()
+    .min(1)
+    .default(1),
+  limit: Joi.number()
+    .integer()
+    .min(1)
+    .max(100)
+    .default(20),
+  sort: Joi.string()
+    .valid('newest', 'oldest')
+    .default('newest')
+});
