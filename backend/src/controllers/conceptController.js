@@ -1,16 +1,20 @@
 const Concept = require('../models/Concept');
 const asyncHandler = require('../utils/asyncHandler');
+const { buildPaginationMeta, resolvePagination } = require('../utils/paginator');
 const { successResponse } = require('../utils/response');
 const { NotFoundError, AuthorizationError } = require('../utils/errorClass');
 
 const listConcepts = asyncHandler(async (req, res) => {
   const {
-    page = 1,
-    limit = 10,
     sort = 'newest',
     difficulty,
     category
   } = req.query;
+  const { page, limit, skip } = resolvePagination({
+    page: req.query.page,
+    limit: req.query.limit,
+    defaultLimit: 10
+  });
 
   const filter = {
     isArchived: false
@@ -25,7 +29,6 @@ const listConcepts = asyncHandler(async (req, res) => {
   }
 
   const sortBy = sort === 'oldest' ? { createdAt: 1 } : { createdAt: -1 };
-  const skip = (page - 1) * limit;
 
   const [items, total] = await Promise.all([
     Concept.find(filter).sort(sortBy).skip(skip).limit(limit),
@@ -34,12 +37,7 @@ const listConcepts = asyncHandler(async (req, res) => {
 
   return successResponse(res, 200, 'Concepts fetched successfully', {
     items,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit)
-    }
+    pagination: buildPaginationMeta({ page, limit, total })
   });
 });
 

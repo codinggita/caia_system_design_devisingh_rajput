@@ -1,5 +1,6 @@
 const Concept = require('../models/Concept');
 const asyncHandler = require('../utils/asyncHandler');
+const { buildPaginationMeta, resolvePagination } = require('../utils/paginator');
 const { successResponse } = require('../utils/response');
 
 const filterConcepts = asyncHandler(async (req, res) => {
@@ -8,10 +9,13 @@ const filterConcepts = asyncHandler(async (req, res) => {
     difficulty,
     language,
     technology,
-    pattern,
-    page = 1,
-    limit = 10
+    pattern
   } = req.query;
+  const { page, limit, skip } = resolvePagination({
+    page: req.query.page,
+    limit: req.query.limit,
+    defaultLimit: 10
+  });
 
   const filter = {
     isArchived: false
@@ -37,8 +41,6 @@ const filterConcepts = asyncHandler(async (req, res) => {
     filter['metadata.patterns_covered'] = pattern;
   }
 
-  const skip = (page - 1) * limit;
-
   const [items, total] = await Promise.all([
     Concept.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
     Concept.countDocuments(filter)
@@ -46,12 +48,7 @@ const filterConcepts = asyncHandler(async (req, res) => {
 
   return successResponse(res, 200, 'Filtered concepts fetched successfully', {
     items,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit)
-    }
+    pagination: buildPaginationMeta({ page, limit, total })
   });
 });
 
