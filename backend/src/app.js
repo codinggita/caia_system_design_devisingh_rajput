@@ -20,6 +20,8 @@ const analyticsRoutes = require('./routes/analyticsRoutes');
 const bulkRoutes = require('./routes/bulkRoutes');
 const systemRoutes = require('./routes/systemRoutes');
 const discoveryRoutes = require('./routes/discoveryRoutes');
+const preferenceRoutes = require('./routes/preferenceRoutes');
+const recommendationRoutes = require('./routes/recommendationRoutes');
 
 const app = express();
 
@@ -55,6 +57,8 @@ app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/bulk', bulkRoutes);
 app.use('/api/v1/discovery', discoveryRoutes);
+app.use('/api/v1/preferences', preferenceRoutes);
+app.use('/api/v1/recommendations', recommendationRoutes);
 if (env.ENABLE_SYSTEM_ROUTES) {
   app.use('/api/v1/system', systemRoutes);
 }
