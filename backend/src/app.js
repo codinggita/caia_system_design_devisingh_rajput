@@ -25,6 +25,7 @@ const recommendationRoutes = require('./routes/recommendationRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const learningPathRoutes = require('./routes/learningPathRoutes');
 const progressRoutes = require('./routes/progressRoutes');
+const achievementRoutes = require('./routes/achievementRoutes');
 
 const app = express();
 
@@ -65,6 +66,7 @@ app.use('/api/v1/recommendations', recommendationRoutes);
 app.use('/api/v1/profile', profileRoutes);
 app.use('/api/v1/learning-path', learningPathRoutes);
 app.use('/api/v1/progress', progressRoutes);
+app.use('/api/v1/achievements', achievementRoutes);
 if (env.ENABLE_SYSTEM_ROUTES) {
   app.use('/api/v1/system', systemRoutes);
 }
