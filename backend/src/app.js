@@ -22,6 +22,8 @@ const systemRoutes = require('./routes/systemRoutes');
 const discoveryRoutes = require('./routes/discoveryRoutes');
 const preferenceRoutes = require('./routes/preferenceRoutes');
 const recommendationRoutes = require('./routes/recommendationRoutes');
+const profileRoutes = require('./routes/profileRoutes');
+const learningPathRoutes = require('./routes/learningPathRoutes');
 
 const app = express();
 
@@ -59,6 +61,8 @@ app.use('/api/v1/bulk', bulkRoutes);
 app.use('/api/v1/discovery', discoveryRoutes);
 app.use('/api/v1/preferences', preferenceRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
+app.use('/api/v1/profile', profileRoutes);
+app.use('/api/v1/learning-path', learningPathRoutes);
 if (env.ENABLE_SYSTEM_ROUTES) {
   app.use('/api/v1/system', systemRoutes);
 }
