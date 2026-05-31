@@ -58,6 +58,8 @@ module.exports = {
   LOG_LEVEL: process.env.LOG_LEVEL || 'debug',
   ENABLE_REQUEST_LOGGING: process.env.ENABLE_REQUEST_LOGGING !== 'false',
   ENABLE_ANALYTICS: process.env.ENABLE_ANALYTICS !== 'false',
+  ENABLE_SYSTEM_ROUTES: process.env.ENABLE_SYSTEM_ROUTES !== 'false',
+  SYSTEM_INFO_INCLUDE_MEMORY: process.env.SYSTEM_INFO_INCLUDE_MEMORY !== 'false',
 
   // API Documentation
   ENABLE_SWAGGER: process.env.ENABLE_SWAGGER !== 'false',

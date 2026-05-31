@@ -16,6 +16,8 @@ const voteRoutes = require('./routes/voteRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
+const bulkRoutes = require('./routes/bulkRoutes');
+const systemRoutes = require('./routes/systemRoutes');
 
 const app = express();
 
@@ -48,6 +50,10 @@ app.use('/api/v1/votes', voteRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
+app.use('/api/v1/bulk', bulkRoutes);
+if (env.ENABLE_SYSTEM_ROUTES) {
+  app.use('/api/v1/system', systemRoutes);
+}
 
 app.use(notFound);
 app.use(errorHandler);
