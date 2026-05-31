@@ -148,3 +148,14 @@ exports.archiveConceptsSchema = Joi.object({
       'array.min': 'At least one concept ID must be provided'
     })
 });
+
+/**
+ * Validation schema for concept listing query params
+ */
+exports.listConceptsQuerySchema = Joi.object({
+  page: Joi.number().integer().min(1).default(1),
+  limit: Joi.number().integer().min(1).max(100).default(10),
+  sort: Joi.string().valid('newest', 'oldest').default('newest'),
+  difficulty: Joi.string().valid('beginner', 'intermediate', 'advanced').optional(),
+  category: Joi.string().trim().optional()
+});
