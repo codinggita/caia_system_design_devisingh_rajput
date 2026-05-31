@@ -10,6 +10,7 @@ const logger = (req, res, next) => {
   res.on('finish', () => {
     const duration = Date.now() - startedAt;
     const payload = [
+      `requestId=${req.requestId || 'unknown'}`,
       req.method,
       req.originalUrl,
       `status=${res.statusCode}`,

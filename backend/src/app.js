@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const env = require('./config/env');
 const logger = require('./middlewares/logger');
 const rateLimit = require('./middlewares/rateLimit');
+const requestContext = require('./middlewares/requestContext');
 const { notFound, errorHandler } = require('./middlewares/error');
 const authRoutes = require('./routes/authRoutes');
 const healthRoutes = require('./routes/healthRoutes');
@@ -18,6 +19,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const bulkRoutes = require('./routes/bulkRoutes');
 const systemRoutes = require('./routes/systemRoutes');
+const discoveryRoutes = require('./routes/discoveryRoutes');
 
 const app = express();
 
@@ -30,6 +32,7 @@ app.use(
   })
 );
 app.use(express.json({ limit: '1mb' }));
+app.use(requestContext);
 app.use(rateLimit);
 app.use(logger);
 
@@ -51,6 +54,7 @@ app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/bulk', bulkRoutes);
+app.use('/api/v1/discovery', discoveryRoutes);
 if (env.ENABLE_SYSTEM_ROUTES) {
   app.use('/api/v1/system', systemRoutes);
 }

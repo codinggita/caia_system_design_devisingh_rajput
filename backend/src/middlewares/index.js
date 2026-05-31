@@ -5,6 +5,7 @@ const { notFound, errorHandler } = require('./error');
 const { validate, validateRequest } = require('./validation');
 const logger = require('./logger');
 const rateLimit = require('./rateLimit');
+const requestContext = require('./requestContext');
 
 module.exports = {
   protect,
@@ -14,5 +15,6 @@ module.exports = {
   validate,
   validateRequest,
   logger,
-  rateLimit
+  rateLimit,
+  requestContext
 };

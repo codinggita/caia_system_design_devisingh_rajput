@@ -5,6 +5,7 @@ const Note = require('../models/Note');
 const User = require('../models/User');
 const Vote = require('../models/Vote');
 const asyncHandler = require('../utils/asyncHandler');
+const { buildPaginationMeta, resolvePagination } = require('../utils/paginator');
 const { successResponse } = require('../utils/response');
 const { NotFoundError } = require('../utils/errorClass');
 const { writeAuditLog } = require('../utils/auditLogger');
@@ -30,9 +31,11 @@ const getDashboardStats = asyncHandler(async (req, res) => {
 });
 
 const getAuditLogs = asyncHandler(async (req, res) => {
-  const page = parseInt(req.query.page, 10) || 1;
-  const limit = parseInt(req.query.limit, 10) || 20;
-  const skip = (page - 1) * limit;
+  const { page, limit, skip } = resolvePagination({
+    page: req.query.page,
+    limit: req.query.limit,
+    defaultLimit: 20
+  });
 
   const filter = {};
 
@@ -59,12 +62,7 @@ const getAuditLogs = asyncHandler(async (req, res) => {
 
   return successResponse(res, 200, 'Audit logs fetched successfully', {
     items,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit)
-    }
+    pagination: buildPaginationMeta({ page, limit, total })
   });
 });
 
