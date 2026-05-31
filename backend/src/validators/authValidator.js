@@ -96,10 +96,11 @@ exports.resetPasswordSchema = Joi.object({
  * Validation schema for email verification
  */
 exports.verifyEmailSchema = Joi.object({
-  token: Joi.string()
+  email: emailSchema,
+  code: Joi.string()
     .required()
     .messages({
-      'string.empty': 'Verification token is required'
+      'string.empty': 'Verification code is required'
     })
 });
 
@@ -107,8 +108,20 @@ exports.verifyEmailSchema = Joi.object({
  * Validation schema for profile update
  */
 exports.updateProfileSchema = Joi.object({
-  username: usernameSchema.optional(),
-  email: emailSchema.optional()
+  username: Joi.string()
+    .alphanum()
+    .min(3)
+    .max(20)
+    .optional(),
+  email: Joi.string()
+    .email()
+    .lowercase()
+    .trim()
+    .optional(),
+  password: Joi.string()
+    .min(6)
+    .max(30)
+    .optional()
 }).min(1)
   .messages({
     'object.min': 'At least one field must be provided for update'
