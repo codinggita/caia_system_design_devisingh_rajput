@@ -3,7 +3,7 @@
 ## 🔗 Important Links
 
 * 🌐 Live Project: *Coming Soon*
-* 💻 GitHub Repository: https://github.com/mann2007-ptl/caia_system_design_devisingh_rajput
+* 💻 GitHub Repository: https://github.com/devisingh2007/caia_system_design_devisingh_rajput
 * 📂 Dataset (Google Drive): https://drive.google.com/file/d/1um-ZWp-i2SnDgYC1kOV2BOPcYhzInejV/view?usp=sharing
 * 📘 Assignment Repo: https://github.com/codinggita/CGxSU_Semester_1/tree/main/assignments/05.sem2_full_stack_80_Marks_Project_02
 
