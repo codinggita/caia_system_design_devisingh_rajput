@@ -208,13 +208,18 @@ The project follows a **modular layered architecture**:
 caia_system_design/
 │
 ├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── services/
-│   └── config/
-│
+│  ├── index.js                    # Entry point (loads src/app.js)
+├── src/
+│   ├── app.js                  # Express app setup & middleware
+│   ├── config/                 # Configuration files (db.js, env.js)
+│   ├── controllers/            # Route handlers for each feature
+│   ├── middlewares/            # Custom middleware (auth, error handling, logging)
+│   ├── models/                 # Mongoose schemas (User, Concept, Note, etc.)
+│   ├── routes/                 # API route definitions
+│   ├── scripts/                # Utility scripts (seed.js, etc.)
+│   └── utils/                  # Helper functions (response, pagination, etc.)
+├── package.json
+├── .env                        # Environment variables (create from .env.example)
 └── README.md
 ```
 
