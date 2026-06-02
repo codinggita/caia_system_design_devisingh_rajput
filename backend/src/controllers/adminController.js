@@ -184,11 +184,77 @@ const restoreConcept = asyncHandler(async (req, res) => {
   });
 });
 
+const getUsers = asyncHandler(async (req, res) => {
+  const { page, limit, skip } = resolvePagination({
+    page: req.query.page,
+    limit: req.query.limit,
+    defaultLimit: 10
+  });
+
+  const filter = {};
+  if (req.query.search) {
+    const searchRegex = new RegExp(req.query.search, 'i');
+    filter.$or = [
+      { username: searchRegex },
+      { email: searchRegex }
+    ];
+  }
+
+  const [items, total] = await Promise.all([
+    User.find(filter)
+      .select('-password')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit),
+    User.countDocuments(filter)
+  ]);
+
+  return successResponse(res, 200, 'Users fetched successfully', {
+    items,
+    pagination: buildPaginationMeta({ page, limit, total })
+  });
+});
+
+const changeUserRole = asyncHandler(async (req, res) => {
+  const { role } = req.body;
+
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    throw new NotFoundError('User not found');
+  }
+
+  user.role = role;
+  await user.save();
+
+  await writeAuditLog({
+    req,
+    actorId: req.user.id,
+    actorRole: req.user.role,
+    action: 'user.role_change',
+    target: {
+      resource: 'user',
+      id: user._id
+    },
+    details: {
+      newState: {
+        role: user.role
+      }
+    }
+  });
+
+  return successResponse(res, 200, 'User role updated successfully', {
+    id: user._id,
+    role: user.role
+  });
+});
+
 module.exports = {
   getDashboardStats,
   getAuditLogs,
   banUser,
   unbanUser,
   archiveConcept,
-  restoreConcept
+  restoreConcept,
+  getUsers,
+  changeUserRole
 };
