@@ -145,7 +145,45 @@ const getRecommendedConcepts = asyncHandler(async (req, res) => {
   });
 });
 
+const getDailyChallenge = asyncHandler(async (req, res) => {
+  // Simple daily challenge: random concept based on current date
+  const count = await Concept.countDocuments({ isArchived: false });
+  if (count === 0) {
+    return successResponse(res, 200, 'No concepts available for challenge', null);
+  }
+
+  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+  const skip = dayOfYear % count;
+  
+  const challenge = await Concept.findOne({ isArchived: false }).skip(skip);
+  
+  return successResponse(res, 200, 'Daily challenge fetched successfully', challenge);
+});
+
+const getRoadmap = asyncHandler(async (req, res) => {
+  const { type } = req.params;
+  
+  // Mapping of roadmap types to categories or keywords
+  const typeMap = {
+    'system-design': 'Distributed Systems',
+    'backend': 'Databases & Storage',
+    'frontend': 'APIs & Gateways',
+    'devops': 'Infrastructure & DevOps'
+  };
+
+  const category = typeMap[type] || 'Distributed Systems';
+  
+  const roadmap = await Concept.find({ 
+    'metadata.category': category,
+    isArchived: false 
+  }).limit(5);
+
+  return successResponse(res, 200, 'Roadmap fetched successfully', roadmap);
+});
+
 module.exports = {
   getTrendingConcepts,
-  getRecommendedConcepts
+  getRecommendedConcepts,
+  getDailyChallenge,
+  getRoadmap
 };
