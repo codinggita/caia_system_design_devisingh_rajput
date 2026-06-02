@@ -54,8 +54,12 @@ class QueryBuilder {
    */
   range(field, min, max) {
     this.query[field] = {};
-    if (min !== undefined) this.query[field].$gte = min;
-    if (max !== undefined) this.query[field].$lte = max;
+    if (min !== undefined) {
+      this.query[field].$gte = min;
+    }
+    if (max !== undefined) {
+      this.query[field].$lte = max;
+    }
     return this;
   }
 
@@ -142,37 +146,41 @@ class QueryBuilder {
    * @returns {Promise} { results, pagination }
    */
   async execute() {
-    try {
-      let q = this.model.find(this.query);
+    let q = this.model.find(this.query);
 
-      if (this.options.select) q = q.select(this.options.select);
-      if (this.options.sort) q = q.sort(this.options.sort);
-      if (this.options.lean) q = q.lean();
-      if (this.options.hint) q = q.hint(this.options.hint);
-
-      // Get total count for pagination (before skip/limit)
-      const total = await this.model.countDocuments(this.query);
-      const page = Math.ceil((this.options.skip + 1) / this.options.limit);
-
-      // Apply pagination
-      q = q.skip(this.options.skip).limit(this.options.limit);
-
-      const results = await q.exec();
-
-      return {
-        results,
-        pagination: {
-          total,
-          page,
-          limit: this.options.limit,
-          pages: Math.ceil(total / this.options.limit),
-          hasNext: this.options.skip + this.options.limit < total,
-          hasPrev: this.options.skip > 0
-        }
-      };
-    } catch (err) {
-      throw err;
+    if (this.options.select) {
+      q = q.select(this.options.select);
     }
+    if (this.options.sort) {
+      q = q.sort(this.options.sort);
+    }
+    if (this.options.lean) {
+      q = q.lean();
+    }
+    if (this.options.hint) {
+      q = q.hint(this.options.hint);
+    }
+
+    // Get total count for pagination (before skip/limit)
+    const total = await this.model.countDocuments(this.query);
+    const page = Math.ceil((this.options.skip + 1) / this.options.limit);
+
+    // Apply pagination
+    q = q.skip(this.options.skip).limit(this.options.limit);
+
+    const results = await q.exec();
+
+    return {
+      results,
+      pagination: {
+        total,
+        page,
+        limit: this.options.limit,
+        pages: Math.ceil(total / this.options.limit),
+        hasNext: this.options.skip + this.options.limit < total,
+        hasPrev: this.options.skip > 0
+      }
+    };
   }
 
   /**
@@ -222,7 +230,7 @@ class QueryAnalyzer {
    * @param {object} model - Mongoose model
    * @returns {array} Array of suggested index configs
    */
-  static suggestIndexes(model) {
+  static suggestIndexes(_model) {
     const suggestions = [
       { name: 'text_search', spec: { title: 'text', description: 'text' } },
       { name: 'category_difficulty', spec: { 'metadata.category': 1, 'metadata.difficulty': 1 } },
