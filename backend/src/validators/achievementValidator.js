@@ -14,10 +14,11 @@ const validateAchievement = (req, res, next) => {
   if (error) {
     return res.status(400).json({ success: false, message: 'Invalid achievement payload', errors: error.details });
   }
-  req.validated = value;
+  req.body = value;
   return next();
 };
 
 module.exports = {
+  achievementSchema,
   validateAchievement
 };
