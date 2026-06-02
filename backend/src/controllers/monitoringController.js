@@ -1,5 +1,5 @@
 const { getPerformanceStats, performanceMetrics } = require('../middlewares/performance');
-const { successResponse, errorResponse } = require('../utils/response');
+const { successResponse } = require('../utils/response');
 
 /**
  * monitoringController.js
@@ -267,7 +267,9 @@ const groupByStatusCode = (requests) => {
  * Calculate error rate
  */
 const calculateErrorRate = (requests) => {
-  if (requests.length === 0) return 0;
+  if (requests.length === 0) {
+    return 0;
+  }
   const errors = requests.filter(r => r.statusCode >= 400).length;
   return ((errors / requests.length) * 100).toFixed(2);
 };
@@ -276,7 +278,9 @@ const calculateErrorRate = (requests) => {
  * Calculate average response time
  */
 const calculateAverageResponseTime = (requests) => {
-  if (requests.length === 0) return 0;
+  if (requests.length === 0) {
+    return 0;
+  }
   const total = requests.reduce((sum, r) => sum + r.duration, 0);
   return (total / requests.length).toFixed(2);
 };
