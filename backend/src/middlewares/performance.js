@@ -130,7 +130,9 @@ const getPathBreakdown = (requests) => {
     }
     breakdown[req.path].count++;
     breakdown[req.path].durations.push(req.duration);
-    if (req.statusCode >= 400) breakdown[req.path].errors++;
+    if (req.statusCode >= 400) {
+      breakdown[req.path].errors++;
+    }
   });
 
   // Calculate averages
