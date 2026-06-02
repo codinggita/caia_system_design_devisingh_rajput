@@ -1,6 +1,8 @@
 const Concept = require('../models/Concept');
 const UserPreferences = require('../models/UserPreferences');
-const { successResponse, errorResponse } = require('../utils/response');
+const asyncHandler = require('../utils/asyncHandler');
+const { successResponse } = require('../utils/response');
+const { AuthenticationError } = require('../utils/errorClass');
 
 const buildLearningPathQuery = (prefs, profile) => {
   const query = { isArchived: false };
@@ -25,27 +27,25 @@ const buildLearningPathQuery = (prefs, profile) => {
   return query;
 };
 
-const getLearningPath = async (req, res, next) => {
-  try {
-    const userId = req.user && req.user.id;
-    if (!userId) return errorResponse(res, 401, 'Unauthorized');
-
-    const prefs = await UserPreferences.findOne({ user: userId }).lean();
-    const profile = await require('../models/UserProfile').findOne({ user: userId }).lean();
-
-    const query = buildLearningPathQuery(prefs, profile);
-    const limit = parseInt(req.query.limit, 10) || 8;
-
-    const path = await Concept.find(query)
-      .sort({ 'metadata.difficulty': 1, createdAt: -1 })
-      .limit(limit)
-      .lean();
-
-    return successResponse(res, 200, 'Learning path generated', path);
-  } catch (err) {
-    return next(err);
+const getLearningPath = asyncHandler(async (req, res) => {
+  const userId = req.user && req.user.id;
+  if (!userId) {
+    throw new AuthenticationError('Unauthorized');
   }
-};
+
+  const prefs = await UserPreferences.findOne({ user: userId }).lean();
+  const profile = await require('../models/UserProfile').findOne({ user: userId }).lean();
+
+  const query = buildLearningPathQuery(prefs, profile);
+  const limit = parseInt(req.query.limit, 10) || 8;
+
+  const path = await Concept.find(query)
+    .sort({ 'metadata.difficulty': 1, createdAt: -1 })
+    .limit(limit)
+    .lean();
+
+  return successResponse(res, 200, 'Learning path generated', path);
+});
 
 module.exports = {
   getLearningPath
