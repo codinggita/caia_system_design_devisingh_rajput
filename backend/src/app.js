@@ -14,7 +14,7 @@ const bookmarkNoteRoutes = require('./routes/bookmarkNoteRoutes');
 const searchRoutes = require('./routes/searchRoutes');
 const filterRoutes = require('./routes/filterRoutes');
 const voteRoutes = require('./routes/voteRoutes');
-const categoryRoutes = require('./routes/categoryRoutes');
+const taxonomyRoutes = require('./routes/taxonomyRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const bulkRoutes = require('./routes/bulkRoutes');
@@ -35,7 +35,32 @@ const allowedOrigins = env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
 app.use(helmet());
 app.use(
   cors({
-    origin: allowedOrigins
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like curl requests or mobile apps)
+      if (!origin) {
+        return callback(null, true);
+      }
+      
+      // Normalize origin by removing trailing slash
+      const normalizedOrigin = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+      
+      // Check if origin is allowed
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+      
+      // For development, log the origin for debugging
+      if (env.NODE_ENV === 'development') {
+        console.warn(`⚠️ CORS blocked origin: ${origin}`);
+        console.warn(`✅ Allowed origins: ${allowedOrigins.join(', ')}`);
+      }
+      
+      return callback(new Error('Not allowed by CORS'));
+    },
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    credentials: true,
+    maxAge: 86400 // 24 hours
   })
 );
 app.use(express.json({ limit: '1mb' }));
@@ -57,7 +82,7 @@ app.use('/api/v1/me', bookmarkNoteRoutes);
 app.use('/api/v1/search', searchRoutes);
 app.use('/api/v1/filter', filterRoutes);
 app.use('/api/v1/votes', voteRoutes);
-app.use('/api/v1/categories', categoryRoutes);
+app.use('/api/v1', taxonomyRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/bulk', bulkRoutes);
