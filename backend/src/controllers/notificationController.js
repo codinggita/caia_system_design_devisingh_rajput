@@ -1,35 +1,33 @@
 const Notification = require('../models/Notification');
-const { successResponse, errorResponse } = require('../utils/response');
+const asyncHandler = require('../utils/asyncHandler');
+const { successResponse } = require('../utils/response');
+const { AuthenticationError } = require('../utils/errorClass');
 
-const getUserNotifications = async (req, res, next) => {
-  try {
-    const userId = req.user && req.user.id;
-    if (!userId) return errorResponse(res, 401, 'Unauthorized');
-
-    const limit = parseInt(req.query.limit, 10) || 20;
-    const notifications = await Notification.find({ user: userId })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .lean();
-
-    return successResponse(res, 200, 'Notifications fetched', notifications);
-  } catch (err) {
-    return next(err);
+const getUserNotifications = asyncHandler(async (req, res) => {
+  const userId = req.user && req.user.id;
+  if (!userId) {
+    throw new AuthenticationError('Unauthorized');
   }
-};
 
-const createNotification = async (req, res, next) => {
-  try {
-    const userId = req.user && req.user.id;
-    if (!userId) return errorResponse(res, 401, 'Unauthorized');
+  const limit = parseInt(req.query.limit, 10) || 20;
+  const notifications = await Notification.find({ user: userId })
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean();
 
-    const payload = req.validated || req.body;
-    const doc = await Notification.create({ ...payload, user: userId });
-    return successResponse(res, 201, 'Notification created', doc);
-  } catch (err) {
-    return next(err);
+  return successResponse(res, 200, 'Notifications fetched', notifications);
+});
+
+const createNotification = asyncHandler(async (req, res) => {
+  const userId = req.user && req.user.id;
+  if (!userId) {
+    throw new AuthenticationError('Unauthorized');
   }
-};
+
+  const payload = req.body;
+  const doc = await Notification.create({ ...payload, user: userId });
+  return successResponse(res, 201, 'Notification created', doc);
+});
 
 module.exports = {
   getUserNotifications,
