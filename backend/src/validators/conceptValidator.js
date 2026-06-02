@@ -164,5 +164,6 @@ exports.listConceptsQuerySchema = Joi.object({
   limit: Joi.number().integer().min(1).max(100).default(10),
   sort: Joi.string().valid('newest', 'oldest').default('newest'),
   difficulty: Joi.string().valid('beginner', 'intermediate', 'advanced').optional(),
-  category: Joi.string().trim().optional()
+  category: Joi.string().trim().optional(),
+  search: Joi.string().trim().allow('').optional()
 });
