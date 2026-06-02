@@ -21,14 +21,24 @@ router.options('/errors/:errorType', (req, res) => {
 router.post('/concept', (req, res) => {
   const { prompt, response, metadata } = req.body;
   const errors = [];
-  if (!prompt) errors.push('prompt is required');
-  if (!response) errors.push('response is required');
+  if (!prompt) {
+    errors.push('prompt is required');
+  }
+  if (!response) {
+    errors.push('response is required');
+  }
   if (!metadata) {
     errors.push('metadata object is required');
   } else {
-    if (!metadata.category) errors.push('metadata.category is required');
-    if (!metadata.subcategory) errors.push('metadata.subcategory is required');
-    if (!metadata.concept) errors.push('metadata.concept is required');
+    if (!metadata.category) {
+      errors.push('metadata.category is required');
+    }
+    if (!metadata.subcategory) {
+      errors.push('metadata.subcategory is required');
+    }
+    if (!metadata.concept) {
+      errors.push('metadata.concept is required');
+    }
   }
 
   if (errors.length > 0) {
@@ -46,9 +56,15 @@ router.patch('/concept/:id', (req, res) => {
   }
 
   if (updates.metadata) {
-    if (updates.metadata.category === '') errors.push('metadata.category cannot be empty');
-    if (updates.metadata.subcategory === '') errors.push('metadata.subcategory cannot be empty');
-    if (updates.metadata.concept === '') errors.push('metadata.concept cannot be empty');
+    if (updates.metadata.category === '') {
+      errors.push('metadata.category cannot be empty');
+    }
+    if (updates.metadata.subcategory === '') {
+      errors.push('metadata.subcategory cannot be empty');
+    }
+    if (updates.metadata.concept === '') {
+      errors.push('metadata.concept cannot be empty');
+    }
   }
 
   if (errors.length > 0) {
@@ -76,8 +92,12 @@ router.post('/tags', (req, res) => {
 router.post('/upload', (req, res) => {
   const { fileName, fileSize, mimeType } = req.body;
   const errors = [];
-  if (!fileName) errors.push('fileName is required');
-  if (fileSize > 5 * 1024 * 1024) errors.push('File size exceeds the 5MB limit');
+  if (!fileName) {
+    errors.push('fileName is required');
+  }
+  if (fileSize > 5 * 1024 * 1024) {
+    errors.push('File size exceeds the 5MB limit');
+  }
   if (mimeType && !['image/png', 'image/jpeg', 'application/json', 'text/markdown'].includes(mimeType)) {
     errors.push('Unsupported MIME type');
   }
