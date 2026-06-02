@@ -1,5 +1,5 @@
-// add_comments.js – automatically prepend short comments to every .js file in the project
 #!/usr/bin/env node
+// add_comments.js – automatically prepend short comments to every .js file in the project
 
 /*
   This script scans the project root (process.cwd()) recursively and adds beginner‑friendly comments
