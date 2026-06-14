@@ -41,13 +41,7 @@ const usernameSchema = Joi.string()
 exports.registerSchema = Joi.object({
   username: usernameSchema,
   email: emailSchema,
-  password: passwordSchema,
-  role: Joi.string()
-    .valid('user', 'admin')
-    .default('user')
-    .messages({
-      'any.only': 'Role must be either "user" or "admin"'
-    })
+  password: passwordSchema
 });
 
 /**

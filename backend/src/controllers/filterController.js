@@ -52,6 +52,36 @@ const filterConcepts = asyncHandler(async (req, res) => {
   });
 });
 
+const filterByCategory = asyncHandler(async (req, res) => {
+  const { name } = req.query;
+  const items = await Concept.find({
+    isArchived: false,
+    'metadata.category': name
+  }).limit(20);
+  return successResponse(res, 200, 'Concepts filtered by category fetched successfully', items);
+});
+
+const filterByDifficulty = asyncHandler(async (req, res) => {
+  const { level } = req.query;
+  const items = await Concept.find({
+    isArchived: false,
+    'metadata.difficulty': level
+  }).limit(20);
+  return successResponse(res, 200, 'Concepts filtered by difficulty fetched successfully', items);
+});
+
+const filterByPattern = asyncHandler(async (req, res) => {
+  const { name } = req.query;
+  const items = await Concept.find({
+    isArchived: false,
+    'metadata.patterns_covered': name
+  }).limit(20);
+  return successResponse(res, 200, 'Concepts filtered by pattern fetched successfully', items);
+});
+
 module.exports = {
-  filterConcepts
+  filterConcepts,
+  filterByCategory,
+  filterByDifficulty,
+  filterByPattern
 };

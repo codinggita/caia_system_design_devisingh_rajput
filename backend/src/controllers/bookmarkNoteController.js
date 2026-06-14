@@ -16,11 +16,25 @@ const ensureConceptExists = async (conceptId) => {
 };
 
 const getMyBookmarks = asyncHandler(async (req, res) => {
-  const bookmarks = await Bookmark.find({ user: req.user.id })
-    .sort({ createdAt: -1 })
-    .populate('concept');
+  const { page, limit, skip } = resolvePagination({
+    page: req.query.page,
+    limit: req.query.limit,
+    defaultLimit: 20
+  });
 
-  return successResponse(res, 200, 'Bookmarks fetched successfully', bookmarks);
+  const [items, total] = await Promise.all([
+    Bookmark.find({ user: req.user.id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate('concept'),
+    Bookmark.countDocuments({ user: req.user.id })
+  ]);
+
+  return successResponse(res, 200, 'Bookmarks fetched successfully', {
+    items,
+    pagination: buildPaginationMeta({ page, limit, total })
+  });
 });
 
 const getMyNotes = asyncHandler(async (req, res) => {

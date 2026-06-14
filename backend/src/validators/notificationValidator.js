@@ -9,11 +9,14 @@ const notificationSchema = Joi.object({
 
 const validateNotification = (req, res, next) => {
   const { error, value } = notificationSchema.validate(req.body, { stripUnknown: true });
-  if (error) return res.status(400).json({ success: false, message: 'Invalid notification payload', errors: error.details });
-  req.validated = value;
+  if (error) {
+    return res.status(400).json({ success: false, message: 'Invalid notification payload', errors: error.details });
+  }
+  req.body = value;
   return next();
 };
 
 module.exports = {
+  notificationSchema,
   validateNotification
 };

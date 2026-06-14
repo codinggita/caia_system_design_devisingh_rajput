@@ -191,6 +191,18 @@ exports.auditLogQuerySchema = Joi.object({
 });
 
 /**
+ * Validation schema for user role change
+ */
+exports.changeRoleSchema = Joi.object({
+  role: Joi.string()
+    .valid('user', 'admin')
+    .required()
+    .messages({
+      'any.only': 'Role must be either "user" or "admin"'
+    })
+});
+
+/**
  * Validation schema for personal notes list query options
  */
 exports.notesListQuerySchema = Joi.object({

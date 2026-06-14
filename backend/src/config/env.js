@@ -37,7 +37,7 @@ module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'development',
 
   // Database Configuration
-  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/caia_db',
+  MONGODB_URL: process.env.MONGODB_URL || 'mongodb://127.0.0.1:27017/caia_db',
 
   // JWT Configuration
   JWT_SECRET: process.env.JWT_SECRET || 'caia_jwt_secret_key_2026_xyz_change_this_in_production',
@@ -48,7 +48,7 @@ module.exports = {
   EMAIL_VERIFY_EXPIRE: parseInt(process.env.EMAIL_VERIFY_EXPIRE, 10) || 60, // minutes
 
   // CORS Configuration
-  CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:3000,http://localhost:3001',
+  CORS_ORIGIN: process.env.CORS_ORIGIN || 'http://localhost:3000,http://localhost:3001,http://localhost:5173',
 
   // Rate Limiting
   RATE_LIMIT_WINDOW_MS: parseRateLimitWindow(),

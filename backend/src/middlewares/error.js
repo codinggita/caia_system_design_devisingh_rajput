@@ -1,12 +1,18 @@
 const { errorResponse } = require('../utils/response');
-const { AppError, ValidationError, AuthenticationError } = require('../utils/errorClass');
+const { 
+  AppError, 
+  AuthenticationError, 
+  NotFoundError, 
+  ConflictError, 
+  ValidationError 
+} = require('../utils/errorClass');
 
 const notFound = (req, res, next) => {
-  const error = new AppError(`Not found - ${req.originalUrl}`, 404);
+  const error = new NotFoundError(`Not found - ${req.originalUrl}`);
   next(error);
 };
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, _next) => {
   let error = { ...err };
   error.message = err.message;
 
@@ -26,7 +32,7 @@ const errorHandler = (err, req, res, next) => {
   // Mongoose bad ObjectId
   if (err.name === 'CastError') {
     const message = `Resource not found with id of ${err.value}`;
-    error = new AppError(message, 404, 'CAST_ERROR');
+    error = new NotFoundError(message);
     return errorResponse(res, error.statusCode, error.message);
   }
 
@@ -34,7 +40,7 @@ const errorHandler = (err, req, res, next) => {
   if (err.code === 11000) {
     const field = Object.keys(err.keyPattern)[0];
     const message = `A record with this ${field} already exists`;
-    error = new AppError(message, 400, 'DUPLICATE_KEY');
+    error = new ConflictError(message);
     return errorResponse(res, error.statusCode, error.message);
   }
 
@@ -45,7 +51,8 @@ const errorHandler = (err, req, res, next) => {
       message: val.message
     }));
     const message = 'Validation failed';
-    return errorResponse(res, 400, message, errors);
+    error = new ValidationError(message, errors);
+    return errorResponse(res, error.statusCode, error.message, error.errors);
   }
 
   // JWT expired
