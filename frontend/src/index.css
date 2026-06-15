@@ -1,38 +1,14 @@
-:root {
-  --bg-app: #050816;
-  --text-primary: #ffffff;
-  --text-muted: #94a3b8;
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@theme {
+  --color-bg-app: #050816;
+  --color-primary: #7C3AED;
+  --color-text-muted: #94A3B8;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: var(--bg-app);
-  color: var(--text-primary);
-  font-family: system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-.app-shell {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-.app-header {
-  text-align: center;
-}
-
-.app-header h1 {
-  margin: 0 0 0.5rem;
-  font-size: 1.875rem;
-  font-weight: 600;
-}
-
-.app-header p {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 1rem;
+@layer base {
+  body {
+    @apply bg-[var(--color-bg-app)] text-white font-sans antialiased;
+  }
 }
