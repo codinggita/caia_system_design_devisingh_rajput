@@ -18,14 +18,19 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
     rules: {
+      ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
-      'no-unused-vars': ['error', {
-        argsIgnorePattern: '^_',
+      'no-unused-vars': ['error', { 
+        argsIgnorePattern: '^_', 
         varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_'
       }],
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/set-state-in-effect': 'off',
     },
   },
 ])
