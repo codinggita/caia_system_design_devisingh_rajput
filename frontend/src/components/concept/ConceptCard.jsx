@@ -62,19 +62,21 @@ export default function ConceptCard({
       return;
     }
     try {
-      const type = hasVoted ? 'down' : 'up';
-      const res = await voteService.vote(conceptId, type);
-      setHasVoted(!hasVoted);
-      // Backend returns the updated votesCount object
+      let res;
+
+      if (hasVoted) {
+        res = await voteService.removeVote(conceptId);
+        setHasVoted(false);
+        toast.success('Vote removed');
+      } else {
+        res = await voteService.vote(conceptId, 'up');
+        setHasVoted(true);
+        toast.success('Concept upvoted!');
+      }
+
       if (res.data?.data?.votesCount) {
         setCurrentVotes(res.data.data.votesCount);
-      } else {
-        setCurrentVotes(prev => ({
-          ...prev,
-          up: hasVoted ? prev.up - 1 : prev.up + 1
-        }));
       }
-      toast.success(hasVoted ? 'Vote removed' : 'Concept upvoted!');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to submit vote');
     }
