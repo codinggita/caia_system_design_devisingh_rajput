@@ -84,10 +84,70 @@ const getAutocomplete = asyncHandler(async (req, res) => {
   return successResponse(res, 200, 'Autocomplete suggestions fetched successfully', items);
 });
 
+const searchByCategory = asyncHandler(async (req, res) => {
+  const { q } = req.query;
+  const items = await Concept.find({
+    isArchived: false,
+    'metadata.category': { $regex: q, $options: 'i' }
+  }).limit(20);
+  return successResponse(res, 200, 'Category search results fetched successfully', items);
+});
+
+const searchByDifficulty = asyncHandler(async (req, res) => {
+  const { q } = req.query;
+  const items = await Concept.find({
+    isArchived: false,
+    'metadata.difficulty': { $regex: q, $options: 'i' }
+  }).limit(20);
+  return successResponse(res, 200, 'Difficulty search results fetched successfully', items);
+});
+
+const searchByLanguage = asyncHandler(async (req, res) => {
+  const { q } = req.query;
+  const items = await Concept.find({
+    isArchived: false,
+    'metadata.languages': { $regex: q, $options: 'i' }
+  }).limit(20);
+  return successResponse(res, 200, 'Language search results fetched successfully', items);
+});
+
+const searchByPattern = asyncHandler(async (req, res) => {
+  const { q } = req.query;
+  const items = await Concept.find({
+    isArchived: false,
+    'metadata.patterns_covered': { $regex: q, $options: 'i' }
+  }).limit(20);
+  return successResponse(res, 200, 'Pattern search results fetched successfully', items);
+});
+
+const getPopularSearches = asyncHandler(async (req, res) => {
+  const { limit = 10 } = req.query;
+  const items = await Concept.find({ isArchived: false })
+    .sort({ bookmarksCount: -1, 'votesCount.up': -1 })
+    .limit(Number(limit))
+    .select('prompt metadata.concept metadata.category metadata.difficulty');
+  return successResponse(res, 200, 'Popular searches fetched successfully', items);
+});
+
+const getRecentSearches = asyncHandler(async (req, res) => {
+  const { limit = 10 } = req.query;
+  const items = await Concept.find({ isArchived: false })
+    .sort({ createdAt: -1 })
+    .limit(Number(limit))
+    .select('prompt metadata.concept metadata.category metadata.difficulty');
+  return successResponse(res, 200, 'Recent searches fetched successfully', items);
+});
+
 module.exports = {
   searchConcepts,
   searchByTitle,
   searchByContent,
   searchByTags,
-  getAutocomplete
+  searchByCategory,
+  searchByDifficulty,
+  searchByLanguage,
+  searchByPattern,
+  getAutocomplete,
+  getPopularSearches,
+  getRecentSearches
 };
