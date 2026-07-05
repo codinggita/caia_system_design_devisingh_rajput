@@ -181,9 +181,96 @@ const getRoadmap = asyncHandler(async (req, res) => {
   return successResponse(res, 200, 'Roadmap fetched successfully', roadmap);
 });
 
+const getExpertPicks = asyncHandler(async (req, res) => {
+  const { limit = 10 } = req.query;
+
+  const items = await Concept.aggregate([
+    {
+      $match: {
+        isArchived: false,
+        'metadata.difficulty': 'advanced'
+      }
+    },
+    {
+      $addFields: {
+        score: scoreProjection
+      }
+    },
+    { $sort: { score: -1, createdAt: -1 } },
+    { $limit: Number(limit) },
+    {
+      $project: {
+        _id: 1,
+        prompt: 1,
+        metadata: 1,
+        bookmarksCount: 1,
+        votesCount: 1,
+        score: 1,
+        createdAt: 1
+      }
+    }
+  ]);
+
+  return successResponse(res, 200, 'Expert picks fetched successfully', { items });
+});
+
+const getHiddenGems = asyncHandler(async (req, res) => {
+  const { limit = 10 } = req.query;
+
+  const items = await Concept.aggregate([
+    {
+      $match: {
+        isArchived: false,
+        bookmarksCount: { $lte: 5 }
+      }
+    },
+    {
+      $addFields: {
+        score: scoreProjection
+      }
+    },
+    { $sort: { score: -1, createdAt: -1 } },
+    { $limit: Number(limit) },
+    {
+      $project: {
+        _id: 1,
+        prompt: 1,
+        metadata: 1,
+        bookmarksCount: 1,
+        votesCount: 1,
+        score: 1,
+        createdAt: 1
+      }
+    }
+  ]);
+
+  return successResponse(res, 200, 'Hidden gems fetched successfully', { items });
+});
+
+const suggestNext = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const concept = await Concept.findById(id);
+
+  if (!concept) {
+    const fallback = await Concept.find({ isArchived: false }).sort({ createdAt: -1 }).limit(5);
+    return successResponse(res, 200, 'Next suggestions fetched successfully', { items: fallback });
+  }
+
+  const items = await Concept.find({
+    _id: { $ne: concept._id },
+    'metadata.category': concept.metadata.category,
+    isArchived: false
+  }).limit(5);
+
+  return successResponse(res, 200, 'Next suggestions fetched successfully', { items });
+});
+
 module.exports = {
   getTrendingConcepts,
   getRecommendedConcepts,
   getDailyChallenge,
-  getRoadmap
+  getRoadmap,
+  getExpertPicks,
+  getHiddenGems,
+  suggestNext
 };
