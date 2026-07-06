@@ -209,6 +209,15 @@ const bulkRestoreConcepts = asyncHandler(async (req, res) => {
   return successResponse(res, 200, 'Concepts restored in bulk successfully', result);
 });
 
+const bulkDeleteConcepts = asyncHandler(async (req, res) => {
+  const { conceptIds } = req.body;
+  const result = await Concept.deleteMany(
+    { _id: { $in: conceptIds } }
+  );
+
+  return successResponse(res, 200, 'Concepts deleted in bulk successfully', result);
+});
+
 module.exports = {
   listConcepts,
   getConceptById,
@@ -223,5 +232,6 @@ module.exports = {
   getConceptSummary,
   bulkCreateConcepts,
   bulkArchiveConcepts,
-  bulkRestoreConcepts
+  bulkRestoreConcepts,
+  bulkDeleteConcepts
 };

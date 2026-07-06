@@ -43,11 +43,11 @@ const getCategorySummary = asyncHandler(async (req, res) => {
 const getSubcategoriesByCategory = asyncHandler(async (req, res) => {
   const subcategories = await Concept.distinct('metadata.subcategory', {
     isArchived: false,
-    'metadata.category': req.params.name
+    'metadata.category': req.params.category
   });
 
   return successResponse(res, 200, 'Subcategories fetched successfully', {
-    category: req.params.name,
+    category: req.params.category,
     subcategories: subcategories.sort()
   });
 });

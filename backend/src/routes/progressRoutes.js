@@ -7,5 +7,6 @@ const { validateProgress } = require('../validators/progressValidator');
 router.use(protect);
 router.get('/', progressController.getUserProgress);
 router.put('/', validateProgress, progressController.updateUserProgress);
+router.patch('/', validateProgress, progressController.updateUserProgress);
 
 module.exports = router;
