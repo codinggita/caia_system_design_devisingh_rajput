@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@theme {
+  --color-bg-app: #050816;
+  --color-primary: #7C3AED;
+  --color-text-muted: #94A3B8;
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--color-bg-app)] text-white font-sans antialiased;
+  }
+}
