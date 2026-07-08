@@ -25,6 +25,7 @@ router.get('/', validate(listConceptsQuerySchema, 'query'), conceptController.li
 router.get('/random', conceptController.getRandomConcept);
 router.get('/latest', conceptController.getLatestConcepts);
 router.get('/popular', conceptController.getPopularConcepts);
+router.get('/trending', conceptController.getPopularConcepts);
 router.get('/:id', validate(objectIdSchema, 'params'), conceptController.getConceptById);
 router.get('/:id/summary', validate(objectIdSchema, 'params'), conceptController.getConceptSummary);
 router.get('/:id/related', validate(objectIdSchema, 'params'), conceptController.getRelatedConcepts);
@@ -39,5 +40,6 @@ router.patch('/:id/restore', protect, validate(objectIdSchema, 'params'), concep
 router.post('/bulk/create', protect, conceptController.bulkCreateConcepts);
 router.patch('/bulk/archive', protect, conceptController.bulkArchiveConcepts);
 router.patch('/bulk/restore', protect, conceptController.bulkRestoreConcepts);
+router.delete('/bulk/delete', protect, conceptController.bulkDeleteConcepts);
 
 module.exports = router;

@@ -7,5 +7,6 @@ const { validateProfile } = require('../validators/profileValidator');
 router.use(protect);
 router.get('/', profileController.getUserProfile);
 router.put('/', validateProfile, profileController.updateUserProfile);
+router.patch('/', validateProfile, profileController.updateUserProfile);
 
 module.exports = router;

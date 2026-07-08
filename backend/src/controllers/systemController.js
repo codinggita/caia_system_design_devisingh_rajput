@@ -60,8 +60,35 @@ const info = asyncHandler(async (req, res) => {
   return successResponse(res, 200, 'System info fetched successfully', baseData);
 });
 
+const status = asyncHandler(async (req, res) => {
+  return successResponse(res, 200, 'System is operational', { status: 'operational' });
+});
+
+const databaseStatus = asyncHandler(async (req, res) => {
+  const readyState = mongoose.connection.readyState;
+  const dbState = dbStateMap[readyState] || 'unknown';
+  return successResponse(res, 200, 'Database status fetched', { state: dbState, isConnected: readyState === 1 });
+});
+
+const getUptime = asyncHandler(async (req, res) => {
+  return successResponse(res, 200, 'Uptime fetched', { uptimeSeconds: Number(process.uptime().toFixed(2)) });
+});
+
+const getVersion = asyncHandler(async (req, res) => {
+  return successResponse(res, 200, 'Version fetched', { version: '1.0.0' });
+});
+
+const getCacheStatus = asyncHandler(async (req, res) => {
+  return successResponse(res, 200, 'Cache status fetched', { status: 'disabled' }); // placeholder for cache
+});
+
 module.exports = {
   ping,
   readiness,
-  info
+  info,
+  status,
+  databaseStatus,
+  getUptime,
+  getVersion,
+  getCacheStatus
 };

@@ -12,4 +12,5 @@ export const bookmarkService = {
 
 export const voteService = {
   vote: (conceptId, voteType) => api.post(`/votes/${conceptId}`, { voteType }),
+  removeVote: (conceptId) => api.delete(`/votes/${conceptId}`),
 };

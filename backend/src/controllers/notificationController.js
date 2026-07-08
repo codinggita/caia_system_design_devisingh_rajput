@@ -1,7 +1,7 @@
 const Notification = require('../models/Notification');
 const asyncHandler = require('../utils/asyncHandler');
 const { successResponse } = require('../utils/response');
-const { AuthenticationError } = require('../utils/errorClass');
+const { AuthenticationError, NotFoundError } = require('../utils/errorClass');
 
 const getUserNotifications = asyncHandler(async (req, res) => {
   const userId = req.user && req.user.id;
@@ -29,7 +29,42 @@ const createNotification = asyncHandler(async (req, res) => {
   return successResponse(res, 201, 'Notification created', doc);
 });
 
+const markAsRead = asyncHandler(async (req, res) => {
+  const userId = req.user && req.user.id;
+  if (!userId) {
+    throw new AuthenticationError('Unauthorized');
+  }
+
+  const notification = await Notification.findOneAndUpdate(
+    { _id: req.params.id, user: userId },
+    { $set: { read: true } },
+    { new: true }
+  );
+
+  if (!notification) {
+    throw new NotFoundError('Notification not found');
+  }
+
+  return successResponse(res, 200, 'Notification marked as read', notification);
+});
+
+const markAllRead = asyncHandler(async (req, res) => {
+  const userId = req.user && req.user.id;
+  if (!userId) {
+    throw new AuthenticationError('Unauthorized');
+  }
+
+  await Notification.updateMany(
+    { user: userId, read: false },
+    { $set: { read: true } }
+  );
+
+  return successResponse(res, 200, 'All notifications marked as read');
+});
+
 module.exports = {
   getUserNotifications,
-  createNotification
+  createNotification,
+  markAsRead,
+  markAllRead
 };
